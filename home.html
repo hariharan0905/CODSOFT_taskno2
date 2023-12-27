@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Management Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    header {
+      background-color: #333;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    main {
+      margin: 20px;
+    }
+
+    #task-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .task-item {
+      background-color: white;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .task-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    input[type="text"] {
+      padding: 5px;
+      margin-right: 5px;
+    }
+
+    #add-task-form {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Project Management Tool</h1>
+  </header>
+
+  <main>
+    <ul id="task-list"></ul>
+
+    <div id="add-task-form">
+      <input type="text" id="task-title" placeholder="Task Title">
+      <input type="text" id="task-description" placeholder="Task Description">
+      <select id="task-status">
+        <option value="todo">To-Do</option>
+        <option value="inprogress">In Progress</option>
+        <option value="done">Done</option>
+      </select>
+      <button onclick="addTask()">Add Task</button>
+    </div>
+  </main>
+
+  <script>
+    const tasks = [];
+
+    function renderTasks() {
+      const taskList = document.getElementById("task-list");
+      taskList.innerHTML = "";
+
+      tasks.forEach(task => {
+        const li = document.createElement("li");
+        li.className = "task-item";
+        li.innerHTML = `
+          <span>${task.title} - ${task.description} - ${task.status}</span>
+          <div class="task-actions">
+            <button onclick="deleteTask('${task.id}')">Delete</button>
+            <button onclick="editTask('${task.id}')">Edit</button>
+          </div>
+        `;
+        taskList.appendChild(li);
+      });
+    }
+
+    function addTask() {
+      const title = document.getElementById("task-title").value;
+      const description = document.getElementById("task-description").value;
+      const status = document.getElementById("task-status").value;
+
+      if (title && description && status) {
+        const newTask = {
+          id: Date.now().toString(),
+          title,
+          description,
+          status
+        };
+
+        tasks.push(newTask);
+        renderTasks();
+      }
+    }
+
+    function deleteTask(taskId) {
+      const index = tasks.findIndex(task => task.id === taskId);
+      if (index !== -1) {
+        tasks.splice(index, 1);
+        renderTasks();
+      }
+    }
+
+    function editTask(taskId) {
+      const index = tasks.findIndex(task => task.id === taskId);
+      if (index !== -1) {
+        const updatedTitle = prompt("Enter updated title:", tasks[index].title);
+        const updatedDescription = prompt("Enter updated description:", tasks[index].description);
+        const updatedStatus = prompt("Enter updated status:", tasks[index].status);
+
+        if (updatedTitle !== null && updatedDescription !== null && updatedStatus !== null) {
+          tasks[index].title = updatedTitle;
+          tasks[index].description = updatedDescription;
+          tasks[index].status = updatedStatus;
+          renderTasks();
+        }
+      }
+    }
+
+    renderTasks();
+  </script>
+</body>
+</html>
